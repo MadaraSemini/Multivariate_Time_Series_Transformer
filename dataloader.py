@@ -2,20 +2,9 @@ import pandas as pd
 import torch
 from torch.utils.data import Dataset, DataLoader
 
-# Read data from CSV
-file_path = './dataset/merged_file.csv'
-df = pd.read_csv(file_path)
-
-# Convert 'Datetime' column to pandas datetime
-df['Datetime'] = pd.to_datetime(df['Datetime'])
-
-# Select columns for training
-cols = list(df.columns)[1:]  # Assuming columns 1 to 6 contain the data needed for training
-df_for_training = df[cols].astype(float)
-
 # Define a custom PyTorch Dataset
 class TimeSeriesDataset(Dataset):
-    def __init__(self, data, n_past=546, n_future=1):
+    def __init__(self, data, n_past=10, n_future=1):
         self.n_past = n_past
         self.n_future = n_future
         self.data = data.values
@@ -24,16 +13,39 @@ class TimeSeriesDataset(Dataset):
         return len(self.data) - self.n_past - self.n_future + 1
 
     def __getitem__(self, idx):
-        print(idx)
         idx += self.n_past  # Shift the index to create sequences
 
         # Extract past and future data based on the index
-        past_data = self.data[idx - self.n_past:idx]
-        future_data = self.data[idx:idx + self.n_future]
+        enc_input = self.data[idx - self.n_past:idx]
+        dec_input = self.data[idx - self.n_past + 2:idx]
+        leb = self.data[idx:idx + self.n_future]
+
+
+        # encoder_input = torch.cat(
+        #     [
+        #         torch.tensor(enc_input, dtype=torch.float32)
+        #     ],
+        #     dim=0,
+        # )
+        # decoder_input = torch.cat(
+        #     [
+        #         torch.tensor(dec_input, dtype=torch.float32)
+        #     ],
+        #     dim=0,
+        # )
+
+        # label = torch.cat(
+        #     [
+        #         torch.tensor(leb, dtype=torch.float32)
+        #     ],
+        #     dim=0,
+        # )
+
 
         return {
-            "input": torch.tensor(past_data, dtype=torch.float32),
-            "target": torch.tensor(future_data, dtype=torch.float32),
+            "encoder_input": torch.tensor(enc_input, dtype=torch.float32).view(-1),
+            "decoder_input": torch.tensor(dec_input, dtype=torch.float32).view(-1),
+            "label": torch.tensor(leb, dtype=torch.float32).view(-1)
         }
 
 # # Parameters for training
