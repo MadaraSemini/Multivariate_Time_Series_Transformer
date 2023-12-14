@@ -35,8 +35,13 @@ def get_ds():
 
         # Your training loop goes here using inputs and targets
         # Replace this example with your model training code
-        print("Input shape:", inputs)
+        print("Input shape:", inputs.shape)
         print("Target shape:", targets)
         break  # Break after the first batch for demonstration
 
 get_ds()
+
+def get_model(config, vocab_tgt_len):
+    model = build_transformer(vocab_tgt_len, config["seq_len"], config['seq_len'], d_model=config['d_model'])
+    return model
+
