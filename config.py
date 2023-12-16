@@ -6,10 +6,10 @@ def get_config():
         "num_epochs": 20,
         "lr": 10**-4,
         "seq_len": 10,
-        "d_model": 512,
+        "d_model": 32,
         "model_folder": "weights",
         "model_basename": "tmodel_",
-        "preload": "latest",
+        "preload": None,
         "experiment_name": "runs/tmodel"
     }
 

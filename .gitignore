@@ -1,1 +1,4 @@
 dataset/
+/weights
+/runs
+__pycache__

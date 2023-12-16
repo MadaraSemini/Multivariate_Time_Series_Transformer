@@ -42,10 +42,18 @@ class TimeSeriesDataset(Dataset):
         # )
 
 
+        # Convert sequences into tensors and flatten them
+        encoder_input = torch.tensor(enc_input, dtype=torch.float32).view(-1)
+        decoder_input = torch.tensor(dec_input, dtype=torch.float32).view(-1)
+        label = torch.tensor(leb, dtype=torch.float32).view(-1)
+
+        # Concatenate tensors if needed
+        # concatenated_tensor = torch.cat([encoder_input, decoder_input, label], dim=0)
+
         return {
-            "encoder_input": torch.tensor(enc_input, dtype=torch.float32).view(-1),
-            "decoder_input": torch.tensor(dec_input, dtype=torch.float32).view(-1),
-            "label": torch.tensor(leb, dtype=torch.float32).view(-1)
+            "encoder_input": encoder_input,
+            "decoder_input": decoder_input,
+            "label": label
         }
 
 # # Parameters for training
